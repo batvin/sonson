@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# BAT-PANEL management menu (simplified reference)
+set -euo pipefail
+
+PROJECT="batman-v2"
+INSTALL_DIR="/opt/batman-v2"
+COMPOSE_FILE="$INSTALL_DIR/docker-compose.yml"
+ENV_FILE="$INSTALL_DIR/.env"
+
+cmd_status() {
+  docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" ps
+}
+
+cmd_logs() {
+  docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" logs --tail=100 -f
+}
+
+cmd_restart() {
+  docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" restart
+}
+
+cmd_stop() {
+  docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" stop
+}
+
+cmd_start() {
+  docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d
+}
+
+echo "BAT-PANEL management"
+echo "1) status  2) logs  3) restart  4) stop  5) start"
+read -r -p "> " c
+case "$c" in
+  1) cmd_status ;;
+  2) cmd_logs ;;
+  3) cmd_restart ;;
+  4) cmd_stop ;;
+  5) cmd_start ;;
+  *) echo "unknown" ;;
+esac
